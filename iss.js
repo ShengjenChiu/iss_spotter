@@ -27,7 +27,6 @@ const fetchMyIP = function(callback) {
     }
 
     // if we get here, all's well and we got the data
-    
     const ip = JSON.parse(body).ip;
 
     callback(null, ip);
@@ -35,4 +34,29 @@ const fetchMyIP = function(callback) {
   });
 };
 
-module.exports = { fetchMyIP };
+
+const fetchCoordsByIP = function(ip, callback) {
+  const url = `https://freegeoip.app/json/${ip}`;
+  request(url, (error, response, body) => {
+    // error can be set if invalid domain, user is offline, etc.
+    if (error) {
+      callback(error, null);
+      return;
+    }
+    // if non-200 status, assume server error
+    if (response.statusCode !== 200) {
+      const msg = `Status Code ${response.statusCode} when fetching coordinates for IP. Response: ${body}`;
+      callback(Error(msg), null);
+      return;
+    }    
+    
+    const { latitude, longitude } = JSON.parse(body);
+
+    callback(null, { latitude, longitude });
+  });
+};
+
+module.exports = {
+  fetchMyIP,
+  fetchCoordsByIP 
+};
