@@ -32,10 +32,21 @@ const { fetchMyIP, fetchCoordsByIP, fetchISSFlyOverTimes, nextISSTimesForMyLocat
 
 // });
 
+
 nextISSTimesForMyLocation((error, passTimes) => {
   if (error) {
-    console.log("It didn't work!" + error);
+    return console.log("It didn't work!", error);
   }
-
-  console.log(passTimes);
+  // success, print out the deets!
+  passTimeFormat(passTimes);
 });
+
+const passTimeFormat = function(passTimes) {
+  for (let pt of passTimes) {
+    let date = new Date(pt.risetime*100);
+    let fomat = `Next pass at ${date} for ${pt.duration} seconds!`;
+
+    console.log(fomat);
+
+  }
+}
